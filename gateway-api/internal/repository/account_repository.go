@@ -106,8 +106,35 @@ func (r *AccountRepository) FindByID(id string) (*domain.Account, error) {
 	return &account, nil
 }
 
-// UpdateBalance atualiza o saldo da conta usando SELECT FOR UPDATE para consistência em acessos concorrentes
-// Retorna ErrAccountNotFound se a conta não existir
+func (r *AccountRepository) FindByEmail(email string) (*domain.Account, error) {
+	var account domain.Account
+	var createdAt, updatedAt time.Time
+
+	err := r.db.QueryRow(`
+		SELECT id, name, email, api_key, balance, created_at, updated_at
+		FROM accounts
+		WHERE email = $1
+	`, email).Scan(
+		&account.ID,
+		&account.Name,
+		&account.Email,
+		&account.APIKey,
+		&account.Balance,
+		&createdAt,
+		&updatedAt,
+	)
+	if err == sql.ErrNoRows {
+		return nil, domain.ErrAccountNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	account.CreatedAt = createdAt
+	account.UpdatedAt = updatedAt
+	return &account, nil
+}
+
 func (r *AccountRepository) UpdateBalance(account *domain.Account) error {
 	tx, err := r.db.Begin()
 	if err != nil {

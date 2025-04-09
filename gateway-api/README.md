@@ -48,7 +48,7 @@
 ### Criar Conta
 
 ```http
-POST http://localhost:8080/accounts
+POST /accounts
 Content-Type: application/json
 
 {
@@ -62,7 +62,7 @@ Retorna os dados da conta criada, incluindo o API Key para autenticação.
 ### Consultar Conta
 
 ```http
-GET http://localhost:8080/accounts
+GET /accounts
 X-API-Key: {api_key}
 ```
 
@@ -71,7 +71,7 @@ Retorna os dados da conta associada ao API Key.
 ### Criar Fatura
 
 ```http
-POST http://localhost:8080/invoice
+POST /invoices
 Content-Type: application/json
 X-API-Key: {api_key}
 
@@ -92,7 +92,7 @@ Cria uma nova fatura e processa o pagamento. Faturas acima de R$ 10.000 ficam pe
 ### Consultar Fatura
 
 ```http
-GET http://localhost:8080/invoice/{id}
+GET /invoices/{id}
 X-API-Key: {api_key}
 ```
 
@@ -101,7 +101,7 @@ Retorna os dados de uma fatura específica.
 ### Listar Faturas
 
 ```http
-GET /invoice
+GET /invoices
 X-API-Key: {api_key}
 ```
 

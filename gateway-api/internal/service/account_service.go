@@ -15,17 +15,25 @@ func NewAccountService(accountRepository domain.AccountRepository) *AccountServi
 	}
 }
 
-func (s *AccountService) CreateAccount(input dto.CreateAccountRequest) (*dto.CreateAccountResponse, error) {
+func (s *AccountService) Create(input dto.CreateAccountRequest) (*dto.CreateAccountResponse, error) {
 	account := dto.ToAccount(input)
 
 	existingAccount, err := s.accountRepository.FindByAPIKey(account.APIKey)
-
 	if err != nil && err != domain.ErrAccountNotFound {
 		return nil, err
 	}
 
 	if existingAccount != nil {
 		return nil, domain.ErrDuplicatedAPIKey
+	}
+
+	existingAccount, err = s.accountRepository.FindByEmail(account.Email)
+	if err != nil && err != domain.ErrAccountNotFound {
+		return nil, err
+	}
+
+	if existingAccount.Email == account.Email {
+		return nil, domain.ErrAccountAlreadyExists
 	}
 
 	err = s.accountRepository.Save(account)
@@ -66,6 +74,16 @@ func (s *AccountService) FindByAPIKey(apiKey string) (*dto.CreateAccountResponse
 
 func (s *AccountService) FindByID(id string) (*dto.CreateAccountResponse, error) {
 	account, err := s.accountRepository.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	output := dto.FromAccount(account)
+	return &output, nil
+}
+
+func (s *AccountService) FindByEmail(email string) (*dto.CreateAccountResponse, error) {
+	account, err := s.accountRepository.FindByEmail(email)
 	if err != nil {
 		return nil, err
 	}

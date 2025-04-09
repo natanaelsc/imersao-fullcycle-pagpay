@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
+	"github.com/natanaelsc/imersao-fullcycle-pagpay/gateway-api/internal/utils"
 )
 
 type Account struct {
@@ -28,7 +28,7 @@ func GenerateAPIKey() string {
 
 func NewAccount(name, email string) *Account {
 	account := &Account{
-		ID:        uuid.New().String(),
+		ID:        utils.GenerateUUID(),
 		Name:      name,
 		Email:     email,
 		Balance:   0.0,
