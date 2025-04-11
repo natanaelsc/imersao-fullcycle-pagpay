@@ -1,0 +1,18 @@
+services:
+
+  nestjs:
+    build: .
+    ports:
+      - 3001:3000
+    volumes:
+      - .:/home/node/app
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: anti-fraud
